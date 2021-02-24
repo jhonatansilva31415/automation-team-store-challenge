@@ -3,7 +3,7 @@ import sys, os, json
 from flask.cli import FlaskGroup
 
 from src.app import create_app, db
-from src.apis.models import Product
+from src.apis.products.models import Product
 
 
 app = create_app()

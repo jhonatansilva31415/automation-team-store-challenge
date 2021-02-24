@@ -1,6 +1,8 @@
 import copy
 
-from src.apis.models import Product
+import pytest
+
+from src.apis.products.models import Product
 
 test_product = {
     "url": "test_product_url",
@@ -29,7 +31,23 @@ def test_add_product(test_app, test_database):
         assert data[key] == test_product[key]
 
 
-def test_add_invalid_product(test_app, test_database):
+@pytest.mark.parametrize(
+    "payload, status_code, message",
+    [
+        [{}, 400, "Input payload validation failed"],
+        [
+            {"url": 1, "brand": -3, "title": "", "price": 0},
+            400,
+            "Input payload validation failed",
+        ],
+        [
+            {"url": "", "brand": "", "title": "", "price": 0},
+            400,
+            "Input payload validation failed",
+        ],
+    ],
+)
+def test_add_invalid_product(test_app, test_database, payload, status_code, message):
     """
     Given a user wanting to add a new product into the database
     When he sends out incorrect data
@@ -38,32 +56,12 @@ def test_add_invalid_product(test_app, test_database):
     client = test_app.test_client()
     response = client.post(
         "/products",
-        json={
-            "url": 1,
-            "brand": -3,
-            "title": "",
-            "price": 0,
-        },
-        content_type="application/json",
-    )
-    assert response.status_code == 400
-
-    response = client.post("/products", json={}, content_type="application/json")
-    assert response.status_code == 400
-
-    response = client.post(
-        "/products",
-        json={
-            "url": "",
-            "brand": "",
-            "title": "",
-            "price": 0,
-        },
+        json=payload,
         content_type="application/json",
     )
     data = response.json
     assert response.status_code == 400
-    assert data["message"] == "Input payload validation failed"
+    assert data["message"] == message
 
 
 def test_add_existing_product(test_app, test_database):
@@ -80,7 +78,7 @@ def test_add_existing_product(test_app, test_database):
         )
     data = response.json
     assert response.status_code == 409
-    assert data == []
+    assert data["message"] == "Product already exists"
 
 
 def test_get_product_by_id(test_app, test_database, add_product):
@@ -135,7 +133,7 @@ def test_update_product(test_app, test_database, add_product):
     client = test_app.test_client()
     # Updates the product
     updated_product = copy.deepcopy(test_product)
-    updated_product.update({"price": 1.11})
+    updated_product.update({"img_url": "test_change_img_url", "price": 1.11})
     response = client.put(
         f"/products/{product.id}",
         json=updated_product,
@@ -170,6 +168,7 @@ def test_update_product_invalid_data(test_app, test_database, add_product):
         json={
             "url": "",
             "brand": "test_brand_put",
+            "img_url": "test_img_url_put",
             "title": "test_title_put",
             "price": 1.11,
         },
