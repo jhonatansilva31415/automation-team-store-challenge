@@ -2,7 +2,7 @@ import pytest
 
 from src.app import create_app, db
 
-from src.apis.models import Product  # noqa  # isort:skip
+from src.apis.products.models import Product  # noqa  # isort:skip
 
 
 @pytest.fixture(scope="module")

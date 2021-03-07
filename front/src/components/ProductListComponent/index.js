@@ -8,7 +8,7 @@ import { Container,
          ButtonStyle,
          ProductSearch
         } from './styles';
-import {FiTrash, FiEdit3} from 'react-icons/fi';
+import {FiTrash} from 'react-icons/fi';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,7 +17,6 @@ import {useCount} from '../../context';
 function ProductList() {
 
     const [products, setProduct] = useState([]);
-    const [visible, setVisible] = useState(false); 
     const [searchTerm, setSearchTerm] = useState('');
     
     const {count} = useCount();

@@ -92,10 +92,10 @@ This endpoint is mainly for uploading a CSV file with product data
 into the API database. You can checkout a [CSV sample](https://github.com/jhonatansilva31415/automation_challenge/blob/main/data.csv.sample) (the endpoint will not accept this file though, you'll need to remove the .sample, but more on this later) in the root of the project 
 
 But the main idea looks like this 
-| url  | brand | title | from | to |
-| ---- | ----- | ----- | ---- | -- |
-| url 1  | brand 1  | title 1  | R$ x.xx  | R$ x.xx 
-| url 2  | brand 2  | title 2  | R$ x.xx  | R$ x.xx
+| url  | img_url | brand | title | from | to |
+| ---- | ----- | ----- | ----- | ---- | -- |
+| url 1  | img_url 1 | brand 1  | title 1  | R$ x.xx  | R$ x.xx 
+| url 2  | img_url 2 | brand 2  | title 2  | R$ x.xx  | R$ x.xx
 
 You can try it out upload a file from [the crawler](https://github.com/jhonatansilva31415/automation_challenge/blob/main/crawler/dafiti.csv)
 
@@ -108,8 +108,8 @@ Now that you tested the echo and uploaded some data into the API, you're ready t
 If you try it out, you'll see that the payload for this endpoint looks like this
 ```json
 {
-  "id": 0,
   "url": "string",
+  "img_url": "string",
   "brand": "string",
   "title": "string",
   "price": 0
@@ -195,20 +195,6 @@ This will run the follow
 For the frontend, a simple React interface was created, as the Swagger API already satisfied the requirement for a interface that has a list of all resources and has the hability to consume it, the React side of it, was built more towards visualization and searching. It would be a nice feature in the future to add ElasticSearch to make a more robust search engine, today it's only using Javascript basic functions to make a filter.
 
 To run the frontend, go to the front folder, and as the API, run `make run-app`, and that's pretty much it, feel free to play around now.
-
----
-
-## Crawler
-
-This project also has a specific spider to make a simple request, it goes to the first page of "shoes" on the dafiti website and scrapes data like
-
-- URL
-- Image URL
-- Brand
-- Title
-- Price
-
-If you want to see the spider in action, you need to have py3 installed on your system, then in the crawler folder run `make setup`. This will install all the requirements, you can make a python env before doing this. After installing the dependencies, you can run the crawler with `make run-app`, this will append data to the dafiti.csv file.
 
 ---
 

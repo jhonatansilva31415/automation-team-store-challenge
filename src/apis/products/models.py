@@ -20,10 +20,10 @@ class Product(db.Model):
     )
 
     def __init__(self, **kwargs):
-        super(Product, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         try:
             # unique number for each product in the URL
             url_without_extension = os.path.splitext(self.url)[0]
             self.dafiti_id = url_without_extension.split("-")[-1]
         except Exception:
-            self.dafiti_id = ""
+            self.dafiti_id = "Not found"

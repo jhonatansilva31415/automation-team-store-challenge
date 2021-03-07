@@ -3,7 +3,7 @@ import copy
 from flask import request
 from flask_restx import Namespace, Resource, fields
 
-from src.apis.crud import (
+from src.apis.products.crud import (
     add_product,
     delete_product,
     get_all_products,
@@ -56,7 +56,7 @@ class ProductsList(Resource):
     @api.doc(
         responses={
             201: "Product <product_id> created",
-            400: "Input payload validation failed",
+            409: "Product already exists",
         }
     )
     def post(self):
@@ -74,7 +74,7 @@ class ProductsList(Resource):
         product = add_product(requested_product)
         product_already_exists = product == []
         if product_already_exists:
-            return product, 409
+            api.abort(409, "Product already exists")
         else:
             return product, 201
 
@@ -105,15 +105,18 @@ class Products(Resource):
         Updates a product given an id
         """
         data = request.get_json()
-        url = data.get("url")
-        brand = data.get("brand")
-        title = data.get("title")
-        price = data.get("price")
+        requested = {
+            "url": data.get("url"),
+            "img_url": data.get("img_url"),
+            "brand": data.get("brand"),
+            "title": data.get("title"),
+            "price": data.get("price"),
+        }
         product = get_product_by_id(product_id)
         if not product:
             api.abort(404, f"Product {product_id} does not exist")
 
-        product = update_product(product, url, brand, title, price)
+        product = update_product(product, requested)
         return product
 
     @api.marshal_with(product_marshal, as_list=True)

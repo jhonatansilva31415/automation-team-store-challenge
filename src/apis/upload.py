@@ -5,7 +5,7 @@ import werkzeug
 from flask_restx import Namespace, Resource
 from werkzeug.datastructures import FileStorage
 
-from src.apis.crud import add_product
+from src.apis.products.crud import add_product
 
 api = Namespace("data", description="Upload data to database")
 upload_parser = api.parser()
@@ -26,8 +26,8 @@ class Upload(Resource):
         }
     )
     def post(self):
-        """ Upload a CSV file to the database, you can see the data.csv.sample for 
-        more info on the expected format """ 
+        """Upload a CSV file to the database, you can see the data.csv.sample for
+        more info on the expected format"""
         msg = {"message": "Failed to import data", "status_code": 400}
         try:
             args = upload_parser.parse_args()
